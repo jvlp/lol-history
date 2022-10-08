@@ -39,7 +39,8 @@ def last_match(name):
     player = get_player(name)
     print(player)
     match_ids = get_match_ids(player["puuid"])
-
+    pname = player["name"]
+    plevel = player["summonerLevel"]
     res = list()
     for id in match_ids:
         match_data = get_match(id)
@@ -54,6 +55,8 @@ def last_match(name):
                     "gameCreation": match_data["info"]["gameStartTimestamp"],
                     "gameMode": match_data["info"]["gameMode"],
                     "win": p["win"],
+                    "summonerName": pname,
+                    "summonerLevel": plevel,
                     "championName": p["championName"],
                     "kills": p["kills"],
                     "deaths": p["deaths"],
