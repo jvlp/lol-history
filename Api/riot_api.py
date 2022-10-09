@@ -15,6 +15,7 @@ header = {
     "X-Riot-Token": os.getenv("API_KEY")
 }
 
+
 def get_player(player_name):
     res_player = get(
         f"https://br1.api.riotgames.com/lol/summoner/v4/summoners/by-name/{player_name}", headers=header)
@@ -39,28 +40,32 @@ def last_match(name):
     player = get_player(name)
     print(player)
     match_ids = get_match_ids(player["puuid"])
-    pname = player["name"]
-    plevel = player["summonerLevel"]
+    p_name = player["name"]
+    p_level = player["summonerLevel"]
+    p_icon = player["profileIconId"]
     res = list()
     for id in match_ids:
         match_data = get_match(id)
+        # return match_data
         participants = match_data['info']['participants']
         match = dict()
         info = dict()
         match["participants"] = list()
-        for p in participants:  
+        for p in participants:
             if p["summonerName"] == name:
                 info.update({
                     "gameDuration": match_data["info"]["gameDuration"],
                     "gameCreation": match_data["info"]["gameStartTimestamp"],
                     "gameMode": match_data["info"]["gameMode"],
                     "win": p["win"],
-                    "summonerName": pname,
-                    "summonerLevel": plevel,
+                    "summonerName": p_name,
+                    "summonerLevel": p_level,
+                    "profileIconId": p_icon,
                     "championName": p["championName"],
                     "kills": p["kills"],
                     "deaths": p["deaths"],
                     "assists": p["assists"],
+                    "championId": p["championId"]
                 })
 
             player = {
@@ -69,13 +74,14 @@ def last_match(name):
                 "kills": p["kills"],
                 "deaths": p["deaths"],
                 "assists": p["assists"],
+                "championId": p["championId"],
             }
             match['participants'].append(player)
 
-        
         match["info"] = info
         res.append(match)
     return res
+
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")

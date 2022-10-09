@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function Home() {
   const [name, setName] = useState('');
-
   const navigate = useNavigate();
+
+  useEffect(() => {
+    document.title = 'LoL History - Home';
+  }, []);
 
   function go2history() {
     navigate(`/${name}`);
