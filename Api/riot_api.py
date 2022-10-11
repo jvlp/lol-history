@@ -30,7 +30,7 @@ def did_expire(date_string: str, expiration_time: int) -> bool:
 
 
 def cache_data(player_name: str, cache_file_name: str, new_data: Dict[str, Any] | List[Dict[str, Any]], match_ids: List[str] = []) -> Dict[str, Any] | List[Dict[str, Any]]:
-    
+
     cached_data = dict()
     with open(cache_file_name, 'r') as cache_file:
         cached_data = json.load(cache_file)
@@ -136,7 +136,7 @@ def setup_response(player: Dict[str, Any], player_name: str, match_ids: List[str
                 info.update({
                     "gameDuration": match_data["info"]["gameDuration"],
                     "gameCreation": match_data["info"]["gameStartTimestamp"],
-                    "gameMode": match_data["info"]["gameMode"],
+                    "queueId": match_data["info"]["queueId"],
                     "win": p["win"],
                     "summonerName": p_name,
                     "summonerLevel": p_level,
@@ -155,6 +155,16 @@ def setup_response(player: Dict[str, Any], player_name: str, match_ids: List[str
                 "deaths": p["deaths"],
                 "assists": p["assists"],
                 "championId": p["championId"],
+                "champLevel": p["champLevel"],
+                "cs": p["totalMinionsKilled"],
+                "totalDamageDealtToChampions": p["totalDamageDealtToChampions"],
+                "item0": p["item0"],
+                "item1": p["item1"],
+                "item2": p["item2"],
+                "item3": p["item3"],
+                "item4": p["item4"],
+                "item5": p["item5"],
+                "item6": p["item6"],
             }
             match['participants'].append(player)
 

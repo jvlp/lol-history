@@ -1,4 +1,7 @@
 import React from 'react';
+import items from '../jsons/items.json';
+import queues from '../jsons/queues.json';
+
 
 function getGameDuration(timestamp) {
   var a = new Date(timestamp * 1000);
@@ -32,10 +35,11 @@ function diff(timestamp) {
 }
 
 export default function Match({ players, info }) {
+
   const {
     gameCreation,
     gameDuration,
-    gameMode,
+    queueId,
     win,
     kills,
     deaths,
@@ -48,12 +52,12 @@ export default function Match({ players, info }) {
 
   if (win) {
     containerClass =
-      'max-w-full border-blue-500 hover:border-l-4 bg-win mb-4 p-2 px-4 flex justify-center xm:justify-between w-screen rounded-2xl';
+      'max-w-full border-blue-500 hover:border-l-4 bg-win mb-4 py-2 pl-4 pr-1 flex justify-center sm:justify-between w-screen rounded-2xl';
     text = 'text-blue-500';
     result = 'Victory';
   } else {
     containerClass =
-      'max-w-full border-red-500 hover:border-l-4 bg-lose mb-4 p-2 px-4 flex justify-center xm:justify-between w-screen rounded-2xl';
+      'max-w-full border-red-500 hover:border-l-4 bg-lose mb-4 py-2 pl-4 pr-1 flex justify-center sm:justify-between w-screen rounded-2xl';
     text = 'text-red-500';
     result = 'Defeat';
   }
@@ -61,10 +65,13 @@ export default function Match({ players, info }) {
   return (
     <div className={containerClass}>
       <div className='flex flex-row'>
-        <div className='flex flex-col justify-center items-center min-w-[12rem] center'>
+        <div className='flex flex-col justify-center items-center min-w-[15rem] lg:min-w-[25rem] center'>
           <div className='border-b-[1px] border-b-slate-400 mb-4 pb-4 border-opacity-25'>
-            <p className={`text-gray-400 font-bold text-4xl mx-5 `}>
-              {gameMode}
+            <p className={`text-gray-400 font-bold text-4xl hidden lg:block`}>
+              {queues[queueId].detailedDescription !== "" ? queues[queueId].detailedDescription : queues[queueId].name}
+            </p>
+            <p className={`text-gray-400 font-bold text-3xl block lg:hidden`}>
+              {queues[queueId].shortName}
             </p>
             <p className=' text-gray-400 '>{diff(gameCreation)}</p>
           </div>
@@ -73,21 +80,21 @@ export default function Match({ players, info }) {
             <p className=' text-gray-400 '>{getGameDuration(gameDuration)}</p>
           </div>
         </div>
-        <div className='hidden flex-col justify-center items-center mx-20 xm:flex'>
-          <img src={championIconURL} className=' scale-75 rounded-full'></img>
+        <div className='hidden flex-col justify-center items-center mx-5 lg:mx-20 xm:flex'>
+          <img src={championIconURL} className='w-16 h-16 lg:w-auto lg:h-auto rounded-full'></img>
           <span className=' text-lg font-semibold'>{championName}</span>
           {kills + '/' + deaths + '/' + assists}
         </div>
       </div>
 
-      <div className='grid grid-rows-5 grid-flow-col gap-1'>
+      <div className='grid grid-rows-5 grid-flow-col float-right'>
         {players.map((player, index) => (
           <div className='flex flex-row text-gray-400 items-center ' key={index}>
             <img
               src={`https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/${player.championId}.png`}
               className='w-7 h-7 mr-2 hidden sm:block'
             ></img>
-            <p className='text-left truncate max-w-[4rem] xm:max-w-[8rem] min-w-[4rem] xm:min-w-[8rem] hidden sm:block'>
+            <p className='text-left mr-6 truncate max-w-[4rem] xm:max-w-[8rem] min-w-[4rem] xm:min-w-[8rem] hidden sm:block'>
               {player.summonerName}
             </p>
           </div>
