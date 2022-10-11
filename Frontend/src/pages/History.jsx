@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import axios from 'axios';
-import Match from '../Components/Match';
+import MatchCard from '../Components/MatchCard';
 import { useQuery } from 'react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -54,9 +54,9 @@ export default function History() {
           update
         </button>
       </div>
-      <div className='flex items-center flex-col'>
+      <div className='flex items-center flex-col '>
         {data.map((match, index) => (
-          <Match key={index} players={match.participants} info={match.info} />
+            <MatchCard key={index} players={match.participants} info={match.info}  />
         ))}
       </div>
     </div>

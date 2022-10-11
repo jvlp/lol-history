@@ -9,16 +9,12 @@ export default function Home() {
     document.title = 'LoL History - Home';
   }, []);
 
-  function go2history() {
-    navigate(`/${name}`);
-  }
-
   function handleChange(event) {
     setName(event.target.value);
   }
 
   function handleKeyDown(event) {
-    if (event.key === 'Enter') go2history();
+    if (event.key === 'Enter') navigate(`/${name}`);
   }
 
   return (
@@ -30,7 +26,7 @@ export default function Home() {
         onChange={handleChange}
         onKeyDown={handleKeyDown}
       />
-      <button className='py-2 px-4 rounded-lg' onClick={go2history}>
+      <button className='py-2 px-4 rounded-lg' onClick={() => navigate(`/${name}`)}>
         Fetch
       </button>
     </div>
