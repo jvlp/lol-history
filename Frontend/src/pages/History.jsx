@@ -30,12 +30,16 @@ export default function History() {
   if (error) navigate('/');
 
   if (isFetching) {
-    return <span className='text-3xl'>Loading...</span>;
+    return (
+    <div className='flex w-full h-full justify-center items-center'>
+      <span className='text-3xl'>Loading...</span>
+    </div>
+    )
   }
   console.log(data);
   return (
     <div className='flex flex-col justify-center items-between xl:mx-20 p-4'>
-      <div className='flex flex-row justify-between mb-4'>
+      <div className='flex flex-row justify-between mb-4 py-4'>
         <div className='flex items-center'>
           <img
             src={`https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/${data[0].info.profileIconId}.jpg`}
@@ -48,7 +52,7 @@ export default function History() {
             {data[0].info.summonerName}
           </span>
         </div>
-        <button className='text-2xl py-4 px-6 rounded-lg' onClick={refetch}>
+        <button className='text-2xl px-12 rounded-lg' onClick={refetch}>
           update
         </button>
       </div>

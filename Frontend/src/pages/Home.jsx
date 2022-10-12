@@ -18,7 +18,7 @@ export default function Home() {
   }
 
   return (
-    <div>
+    <div className='flex justify-center items-center content-center w-full h-full'>
       <input
         className='p-2 rounded-lg m-4 placeholder:text-center'
         placeholder='Summoner Name'
