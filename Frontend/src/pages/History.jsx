@@ -34,8 +34,8 @@ export default function History() {
   }
   console.log(data);
   return (
-    <div>
-      <div className='flex flex-row justify-between  mb-4'>
+    <div className='flex flex-col justify-center items-between xl:mx-20 p-4'>
+      <div className='flex flex-row justify-between mb-4'>
         <div className='flex items-center'>
           <img
             src={`https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/${data[0].info.profileIconId}.jpg`}
@@ -44,19 +44,21 @@ export default function History() {
           <span className=' relative right-[4rem] top-10 bg-slate-700 rounded-xl px-2 text-center '>
             {data[0].info.summonerLevel}
           </span>
-          <div>
-            <span className='text-xl sm:text-5xl'>
-              {data[0].info.summonerName}
-            </span>
-          </div>
+          <span className='text-xl sm:text-5xl'>
+            {data[0].info.summonerName}
+          </span>
         </div>
         <button className='text-2xl py-4 px-6 rounded-lg' onClick={refetch}>
           update
         </button>
       </div>
-      <div className='flex items-center flex-col '>
+      <div className=''>
         {data.map((match, index) => (
-            <MatchCard key={index} players={match.participants} info={match.info}  />
+          <MatchCard
+            key={index}
+            players={match.participants}
+            info={match.info}
+          />
         ))}
       </div>
     </div>

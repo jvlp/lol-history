@@ -1,9 +1,7 @@
 import React from 'react';
-import { useNavigate, Link} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import items from '../jsons/items.json';
 import queues from '../jsons/queues.json';
-
-
 
 function getGameDuration(timestamp) {
   var a = new Date(timestamp * 1000);
@@ -37,9 +35,7 @@ function diff(timestamp) {
 }
 
 export default function MatchCard({ players, info }) {
-
   const navigate = useNavigate();
-
   const {
     gameCreation,
     gameDuration,
@@ -51,59 +47,103 @@ export default function MatchCard({ players, info }) {
     championName,
     championId,
     matchId,
+    items,
+    cs,
+    totalDamageDealt,
   } = info;
-  let containerClass, text, result;
-  const championIconURL = `https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/${championId}.png`;
+  let containerClass, text, result, border;
+  const championIconURL = `https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-tiles/${championId}/${championId}000.jpg`;
 
   if (win) {
     containerClass =
-      'max-w-full border-blue-500 hover:border-l-4 bg-win mb-4 py-2 pl-4 pr-1 flex justify-center sm:justify-between w-screen rounded-2xl';
+      ' border-transparent hover:border-blue-500 border-l-8 bg-win mb-4 py-2 pl-4 pr-1 flex justify-between rounded-2xl cursor-pointer';
     text = 'text-blue-500';
     result = 'Victory';
+    border = 'border-blue-500';
   } else {
     containerClass =
-      'max-w-full border-red-500 hover:border-l-4 bg-lose mb-4 py-2 pl-4 pr-1 flex justify-center sm:justify-between w-screen rounded-2xl';
+      ' border-transparent hover:border-red-500 border-l-8 bg-lose mb-4 py-2 pl-4 pr-1 flex justify-between rounded-2xl cursor-pointer';
     text = 'text-red-500';
     result = 'Defeat';
+    border = 'border-red-500';
   }
 
   return (
-      <div className={containerClass} onClick={()=> navigate(`/match/${matchId}`)}>
-        <div className='flex flex-row'>
-          <div className='flex flex-col justify-center items-center min-w-[15rem] lg:min-w-[25rem] center'>
-            <div className='border-b-[1px] border-b-slate-400 mb-4 pb-4 border-opacity-25'>
-              <p className={`text-gray-400 font-bold text-4xl hidden lg:block`}>
-                {queues[queueId].detailedDescription !== "" ? queues[queueId].detailedDescription : queues[queueId].name}
-              </p>
-              <p className={`text-gray-400 font-bold text-3xl block lg:hidden`}>
-                {queues[queueId].shortName}
-              </p>
-              <p className=' text-gray-400 '>{diff(gameCreation)}</p>
-            </div>
-            <div>
-              <p className={`${text} font-bold text-2xl `}>{result}</p>
-              <p className=' text-gray-400 '>{getGameDuration(gameDuration)}</p>
-            </div>
+    <div
+      className={containerClass}
+      onClick={() => navigate(`/match/${matchId}`)}
+    >
+      <div className='flex flex-row'>
+        <div className='flex flex-col justify-center min-w-[10rem] max-w-[10rem] lg:min-w-[25rem]'>
+          <div className=' mb-4 pb-4'>
+            <p className='text-gray-400 font-bold text-4xl hidden lg:block'>
+              {queues[queueId].detailedDescription !== ''
+                ? queues[queueId].detailedDescription
+                : queues[queueId].name}
+            </p>
+            <p className='text-gray-400 font-bold text-3xl block lg:hidden'>
+              {queues[queueId].shortName}
+            </p>
+            <p className=' text-gray-400 '>{diff(gameCreation)}</p>
           </div>
-          <div className='hidden flex-col justify-center items-center mx-5 lg:mx-20 xm:flex'>
-            <img src={championIconURL} className='w-16 h-16 lg:w-auto lg:h-auto rounded-full'></img>
-            <span className=' text-lg font-semibold'>{championName}</span>
-            {kills + '/' + deaths + '/' + assists}
+          <div>
+            <p className={`${text} font-bold text-2xl `}>{result}</p>
+            <p className=' text-gray-400 '>{getGameDuration(gameDuration)}</p>
           </div>
         </div>
-        <div className='grid grid-rows-5 grid-flow-col float-right'>
-          {players.map((player, index) => (
-            <div className='flex flex-row text-gray-400 items-center ' key={index}>
-              <img
-                src={`https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/${player.championId}.png`}
-                className='w-7 h-7 mr-2 hidden sm:block'
-              ></img>
-              <p className='text-left mr-6 truncate max-w-[4rem] xm:max-w-[8rem] min-w-[4rem] xm:min-w-[8rem] hidden sm:block'>
-                {player.summonerName}
-              </p>
+        {/* <div className='flex flex-row text-center justify-center items-center lg:min-w-[10rem]'> */}
+        <div className='hidden flex-col text-center justify-center items-center lg:ml-15 xm:flex'>
+          <div className='flex flex-row items-center'>
+            <img
+              src={championIconURL}
+              className='w-16 h-16 mr-5 lg:w-28 lg:h-28 rounded-full border-2'
+            ></img>
+            <div className='flex flex-col'>
+              <span className=' text-lg font-semibold'>
+                {kills + '/' + deaths + '/' + assists}
+              </span>
+              <span className=' text-lg'>{cs} CS</span>
+              <span className=' text-lg font-bold'>{championName}</span>
             </div>
-          ))}
+          </div>
+          <div className='md:flex flex-row mx-2 hidden min-w-[13rem]'>
+            {items.map((item, index) => {
+              if (item != 0) {
+                return (
+                  <img
+                    src={`https://ddragon.leagueoflegends.com/cdn/12.19.1/img/item/${item}.png`}
+                    key={index}
+                    className={`w-8 h-8 mx-px my-1 rounded-lg border-2 ${border}`}
+                  ></img>
+                );
+              } else {
+                return (
+                  <div
+                    className={`w-8 h-8 mx-px my-1 rounded-lg border-2 bg-gray-600 ${border}`}
+                    key={index}
+                  ></div>
+                );
+              }
+            })}
+          </div>
         </div>
       </div>
+      <div className='grid grid-rows-5 grid-flow-col float-right'>
+        {players.map((player, index) => (
+          <div
+            className='flex flex-row text-gray-400 items-center '
+            key={index}
+          >
+            <img
+              src={`https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/${player.championId}.png`}
+              className='w-7 h-7 mr-2 hidden sm:block'
+            ></img>
+            <p className='text-left mr-6 truncate max-w-[4rem] md:max-w-[8rem] min-w-[4rem] md:min-w-[8rem] hidden sm:block'>
+              {player.summonerName}
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }

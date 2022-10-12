@@ -58,9 +58,9 @@ def check_cache(file_name: str, key: str) -> Tuple[bool, bool, Dict[str, Any]]:
             cached_data = json.load(f)
             if key in cached_data:
                 entry_not_found = False
+                data = cached_data[key]
                 if not did_expire(cached_data[key]["last_update"], EXPIRATION_TIMEOUT):
-                    print(f"fetched from local {file_name}")
-                    data = cached_data[key]
+                    print(f"fetched from local {file_name}") 
                     expired = False
                 else:
                     print(
@@ -82,7 +82,8 @@ def check_cache(file_name: str, key: str) -> Tuple[bool, bool, Dict[str, Any]]:
 @app.route("/pname/<player_name>")
 def get_player(player_name: str) -> Dict[str, Any]:
 
-    entry_not_found, expired, cached_data = check_cache(PLAYER_CACHE, player_name)
+    entry_not_found, expired, cached_data = check_cache(
+        PLAYER_CACHE, player_name)
 
     if entry_not_found or expired:
         url = f"https://br1.api.riotgames.com/lol/summoner/v4/summoners/by-name/{player_name}"
@@ -112,6 +113,7 @@ def get_match(match_id: str) -> Dict[str, Any]:
         match = res_matchs.json()
         cache_data(match_id, MATCH_CACHE, match)
     else:
+        print(cached_data)
         match = cached_data["data"]
     return match
 
@@ -137,31 +139,21 @@ def setup_response(player: Dict[str, Any], player_name: str, match_ids: List[str
                     "summonerName": p_name,
                     "summonerLevel": p_level,
                     "profileIconId": p_icon,
-                    "championName": p["championName"],
                     "kills": p["kills"],
                     "deaths": p["deaths"],
                     "assists": p["assists"],
                     "championId": p["championId"],
+                    "championName": p["championName"],
+                    "items": [p["item0"],p["item1"],p["item2"],p["item3"],p["item4"],p["item5"]],
+                    "cs": p["totalMinionsKilled"],
+                    "totalDamageDealt": p["totalDamageDealtToChampions"],
                     "matchId": id,
                 })
 
             player = {
                 "summonerName": p["summonerName"],
                 "championName": p["championName"],
-                "kills": p["kills"],
-                "deaths": p["deaths"],
-                "assists": p["assists"],
                 "championId": p["championId"],
-                "champLevel": p["champLevel"],
-                "cs": p["totalMinionsKilled"],
-                "totalDamageDealtToChampions": p["totalDamageDealtToChampions"],
-                "item0": p["item0"],
-                "item1": p["item1"],
-                "item2": p["item2"],
-                "item3": p["item3"],
-                "item4": p["item4"],
-                "item5": p["item5"],
-                "item6": p["item6"],
             }
             match["participants"].append(player)
 
