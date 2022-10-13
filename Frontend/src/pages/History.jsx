@@ -1,8 +1,11 @@
 import React, { useEffect } from 'react';
 import axios from 'axios';
-import MatchCard from '../Components/MatchCard';
 import { useQuery } from 'react-query';
 import { useNavigate, useParams } from 'react-router-dom';
+import HistoryHeader from '../Components/HistoryHeader';
+import HistoryHeaderSkeleton from '../Components/skeleton/HistoryHeaderSkeleton';
+import MatchCard from '../Components/MatchCard';
+import MatchCardSkeleton from '../Components/skeleton/MatchCardSkeleton';
 
 export default function History() {
   const navigate = useNavigate();
@@ -31,33 +34,21 @@ export default function History() {
 
   if (isFetching) {
     return (
-      <div className='flex w-full h-full justify-center items-center'>
-        <span className='text-3xl'>Loading...</span>
+      <div>
+        <HistoryHeaderSkeleton />
+        <div className='flex flex-col w-full h-full justify-center items-center'>
+          {/* <span className='text-3xl'>Loading...</span> */}
+          {new Array(20).fill(0).map((_, index) => (
+            <MatchCardSkeleton key={index} />
+          ))}
+        </div>
       </div>
     );
   }
-  console.log(data);
+  // console.log(data);
   return (
     <div className='w-full flex flex-col justify-center items-between bg-neutral-900 bg-opacity-50'>
-      <div className='flex flex-row bg-neutral-800 p-5 mb-4'>
-        <div className='text-center mr-5'>
-          <img
-            src={`https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/${data[0].info.profileIconId}.jpg`}
-            className='w-28 h-28 rounded-full border-slate-700 border-4 border-double'
-          ></img>
-          <span className=' relative bottom-2 p-1 px-2 bg-slate-700 rounded-xl text-center '>
-            {data[0].info.summonerLevel}
-          </span>
-        </div>
-        <div className='flex flex-col items-start'>
-          <span className='text-2xl sm:text-5xl mb-2'>
-            {data[0].info.summonerName}
-          </span>
-          <button className='text-2xl rounded-lg' onClick={refetch}>
-            update
-          </button>
-        </div>
-      </div>
+      <HistoryHeader data={data} refetch={refetch} />
       <div className='flex flex-col items-center mx-4'>
         {data.map((match, index) => (
           <MatchCard
@@ -66,6 +57,10 @@ export default function History() {
             info={match.info}
           />
         ))}
+      </div>
+
+      <div className='flex justify-center'>
+        <button className='bg-slate-700 text-xl px-8 mb-4 '>Show More</button>
       </div>
     </div>
   );

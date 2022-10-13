@@ -26,7 +26,7 @@ export default function Home() {
         onChange={handleChange}
         onKeyDown={handleKeyDown}
       />
-      <button className='py-2 px-4 rounded-lg' onClick={() => navigate(`/${name}`)}>
+      <button className='py-2 px-4 rounded-lg' onClick={() => navigate(`/summoner/${name}`)}>
         Fetch
       </button>
     </div>

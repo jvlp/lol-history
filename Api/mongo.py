@@ -1,7 +1,8 @@
-from http import client
-from pymongo import MongoClient
-from typing import Dict, Any, Tuple
 from datetime import datetime
+from http import client
+from typing import Any, Dict, Tuple
+
+from pymongo import MongoClient
 
 client = MongoClient("localhost", 27017)
 db = client.lol_history
