@@ -8,7 +8,7 @@ function App() {
   return (
     <Routes>
       <Route path='/' element={<Home />} />
-      <Route path='/:name' element={<History />} />
+      <Route path='/summoner/:name' element={<History />} />
       <Route path='/match/:matchId' element={<Match />} />
     </Routes>
   );

@@ -30,10 +30,10 @@ export default function Match() {
       return p.totalDamageDealtToChampions;
     })
   );
-  
+
   return (
-    <div className='fixed top-0 left-0 w-full h-full flex flex-col justify-center items-center bg-neutral-900 bg-opacity-50 mt-auto'>
-      <div className=' bg-neutral-800 py-10 px-40 bg-opacity-0 rounded-3xl'>
+    <div className='w-full min-h-screen overflow-hidden box-border flex flex-col justify-center items-center bg-neutral-900 bg-opacity-50 mt-auto'>
+      <div className='max-h-full bg-neutral-800 py-10 px-40 bg-opacity-0 rounded-3xl'>
         <div className='text-blue-500 text-2xl font-semibold py-2 rounded-3xl'>
           Blue Team
         </div>

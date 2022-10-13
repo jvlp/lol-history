@@ -28,7 +28,7 @@ export default function Player({ participant, maxDmg }) {
   return (
     <div
       className='flex flex-row justify-center items-center hover:bg-neutral-600 bg-neutral-800 mb-2 px-8 py-2 rounded-xl cursor-pointer'
-      onClick={() => navigate(`/${summonerName}`)}
+      onClick={() => navigate(`/summoner/${summonerName}`)}
     >
       <img
         src={championIconURL}
@@ -38,9 +38,7 @@ export default function Player({ participant, maxDmg }) {
       ></img>
 
       <div className='min-w-[6rem] max-w-[6rem] sm:min-w-[10rem] sm:max-w-[10rem] px-2 flex flex-row items-center'>
-        <span className='truncate'>
-          {summonerName}
-        </span>
+        <span className='truncate'>{summonerName}</span>
       </div>
 
       <div className='hidden md:flex flex-row min-w-[13rem] max-w-[13rem]'>
@@ -58,9 +56,7 @@ export default function Player({ participant, maxDmg }) {
               <div
                 className='w-8 h-8 mx-px my-1 bg-gray-800 rounded-lg border-[2px] border-zinc-600'
                 key={index}
-              >
-
-              </div>
+              ></div>
             );
           }
         })}
@@ -70,7 +66,9 @@ export default function Player({ participant, maxDmg }) {
         <span className='min-w-[4rem] max-w-[4rem]'>
           {kills + '/' + deaths + '/' + assists}
         </span>
-        <span className='whitespace-nowrap min-w-[5rem] max-w-[5rem]'>{totalMinionsKilled} CS</span>
+        <span className='whitespace-nowrap min-w-[5rem] max-w-[5rem]'>
+          {totalMinionsKilled} CS
+        </span>
         <div className='hidden md:block text-center lg:min-w-[8rem] lg:max-w-[8rem]'>
           <span className=''>
             {totalDamageDealtToChampions.toLocaleString()} Damage

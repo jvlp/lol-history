@@ -1,6 +1,5 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import items from '../jsons/items.json';
 import queues from '../jsons/queues.json';
 
 function getGameDuration(timestamp) {
@@ -56,13 +55,13 @@ export default function MatchCard({ players, info }) {
 
   if (win) {
     containerClass =
-      ' border-transparent hover:border-blue-500 border-l-8 bg-win mb-4 py-2 pl-4 pr-1 flex justify-between rounded-2xl cursor-pointer';
+      ' border-transparent w-full xl:w-fit hover:border-blue-500 border-l-8 bg-win mb-4 py-2 pl-4 pr-1 flex justify-evenly rounded-2xl cursor-pointer';
     text = 'text-blue-500';
     result = 'Victory';
     border = 'border-blue-500';
   } else {
     containerClass =
-      ' border-transparent hover:border-red-500 border-l-8 bg-lose mb-4 py-2 pl-4 pr-1 flex justify-between rounded-2xl cursor-pointer';
+      ' border-transparent w-full xl:w-fit hover:border-red-500 border-l-8 bg-lose mb-4 py-2 pl-4 pr-1 flex justify-evenly rounded-2xl cursor-pointer';
     text = 'text-red-500';
     result = 'Defeat';
     border = 'border-red-500';
@@ -92,11 +91,11 @@ export default function MatchCard({ players, info }) {
           </div>
         </div>
         {/* <div className='flex flex-row text-center justify-center items-center lg:min-w-[10rem]'> */}
-        <div className='hidden flex-col text-center justify-center items-center lg:ml-15 xm:flex'>
-          <div className='flex flex-row items-center'>
+        <div className='flex flex-col text-center justify-center items-center lg:ml-15'>
+          <div className='flex flex-col sm:flex-row justify-center items-center'>
             <img
               src={championIconURL}
-              className='w-16 h-16 mr-5 lg:w-28 lg:h-28 rounded-full border-2'
+              className='w-16 h-16 sm:mr-5 lg:w-28 lg:h-28 rounded-full border-2'
             ></img>
             <div className='flex flex-col'>
               <span className=' text-lg font-semibold'>
