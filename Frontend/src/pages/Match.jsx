@@ -43,7 +43,7 @@ export default function Match() {
               <Player participant={participant} maxDmg={maxDmg} key={index} />
             )
         )}
-        <div className=' text-red-500 text-2xl font-semibold pt-10 rounded-3xl'>
+        <div className=' text-red-500 text-2xl font-semibold mt-10 pb-2 rounded-3xl'>
           Red Team
         </div>
         {data.participants.map(

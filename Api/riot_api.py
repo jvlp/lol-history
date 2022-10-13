@@ -6,14 +6,15 @@ from utils import *
 app = Flask(__name__)
 CORS(app)
 
+
 @app.route("/pname/<player_name>")
-def player(player_name) -> Dict[str, Any]:
+def player(player_name: str) -> Dict[str, Any]:
     print(request)
     return get_player(player_name)
 
 
 @app.route("/match/<match_id>")
-def match(match_id) -> Dict[str, Any]:
+def match(match_id: str) -> Dict[str, Any]:
     print(request)
     return get_match(match_id)
 
@@ -30,7 +31,7 @@ def last_match(name: str) -> Dict[str, Any]:
 
 
 @app.route("/match_history/<player_name>")
-def match_history(player_name: str) -> List[Dict[str, Any]] | Dict[str, Any]:
+def match_history(player_name: str) -> List[Dict[str, Any]]:
     print(request)
     return get_match_history(player_name)
 

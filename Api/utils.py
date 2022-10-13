@@ -1,11 +1,10 @@
-from importlib import metadata
-from typing import Dict, List, Any, Tuple
-from datetime import datetime
-from requests import get
-import json
-from dotenv import load_dotenv
 import os
-from mongo import update_db, check_db
+from typing import Any, Dict, List
+
+from dotenv import load_dotenv
+from requests import get
+
+from mongo import check_db, update_db
 
 load_dotenv()
 
@@ -18,8 +17,9 @@ HEADER = {
     "X-Riot-Token": os.getenv("API_KEY")
 }
 
+
 def get_player(player_name: str) -> Dict[str, Any]:
-    entry_not_found, expired, player = check_db("players", {"name": player_name}) 
+    entry_not_found, expired, player = check_db("players", {"name": player_name})
 
     if entry_not_found or expired:
         url = f"https://br1.api.riotgames.com/lol/summoner/v4/summoners/by-name/{player_name}"
@@ -44,7 +44,7 @@ def get_match(match_id: str) -> Dict[str, Any]:
         res_matchs = get(url, headers=HEADER)
         match = res_matchs.json()
         update_db({"matchId": match_id}, "matches", match)
-        
+
     return match["info"]
 
 
@@ -92,7 +92,8 @@ def setup_response(player: Dict[str, Any], player_name: str, match_ids: List[str
 
     return res
 
-def get_match_history(player_name):
+
+def get_match_history(player_name: str) -> List[Dict[str, Any]]:
     player = get_player(player_name)
     print(player)
 

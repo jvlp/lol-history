@@ -14,7 +14,7 @@ export default function Home() {
   }
 
   function handleKeyDown(event) {
-    if (event.key === 'Enter') navigate(`/${name}`);
+    if (event.key === 'Enter') navigate(`/summoner/${name}`);
   }
 
   return (

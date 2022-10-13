@@ -73,7 +73,7 @@ export default function MatchCard({ players, info }) {
       onClick={() => navigate(`/match/${matchId}`)}
     >
       <div className='flex flex-row'>
-        <div className='flex flex-col justify-center min-w-[10rem] max-w-[10rem] lg:min-w-[25rem]'>
+        <div className='flex flex-col justify-center min-w-[10rem] max-w-[10rem] lg:min-w-[20rem] lg:max-w-[20rem] pr-5'>
           <div className=' mb-4 pb-4'>
             <p className='text-gray-400 font-bold text-4xl hidden lg:block'>
               {queues[queueId].detailedDescription !== ''
@@ -102,7 +102,7 @@ export default function MatchCard({ players, info }) {
                 {kills + '/' + deaths + '/' + assists}
               </span>
               <span className=' text-lg'>{cs} CS</span>
-              <span className=' text-lg font-bold'>{championName}</span>
+              {/* <span className=' text-lg font-bold'>{championName}</span> */}
             </div>
           </div>
           <div className='md:flex flex-row mx-2 hidden min-w-[13rem]'>
