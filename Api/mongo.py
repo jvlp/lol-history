@@ -34,7 +34,7 @@ def check_db(collection: str, key: Dict[str, str]) -> Tuple[bool, bool, Dict[str
             print(f"{key} fetched from {collection} collection")
             expired = False
         else:
-            print(f"Expiration timeout reached on entry {key} of {collection}")
+            print(f"Expiration timeout reached on entry {key} of {collection} collection")
             print("Fetching data from riot games")
     else:
         data = dict()
