@@ -19,7 +19,7 @@ export default function HistoryHeader({ data, refetch }) {
       <div className='flex flex-col items-start'>
         <span className='text-2xl sm:text-5xl mb-2'>{summonerName}</span>
         <button
-          className='rounded-lg bg-slate-700 px-4 py-2 text-2xl'
+          className='rounded-lg bg-slate-700 text-2xl'
           onClick={refetch}
         >
           update

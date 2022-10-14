@@ -27,7 +27,7 @@ export default function Player({ participant, maxDmg }) {
   const championIconURL = `https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-tiles/${championId}/${championId}000.jpg`;
   return (
     <div
-      className='flex flex-row justify-center items-center hover:bg-neutral-600 bg-neutral-800 mb-2 px-4 py-2 rounded-xl cursor-pointer'
+      className='flex flex-row justify-center items-center hover:bg-neutral-600 bg-neutral-800 mb-2 px-4 py-2 mx-1 rounded-xl cursor-pointer'
       onClick={() => navigate(`/summoner/${summonerName}`)}
     >
       <img

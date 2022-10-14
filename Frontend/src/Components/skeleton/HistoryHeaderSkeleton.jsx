@@ -23,7 +23,7 @@ export default function HistoryHeaderSkeleton() {
           </span>
           <button
             type='button'
-            className='flex items-center rounded-lg bg-slate-700 px-4 py-2 text-2xl'
+            className='flex items-center rounded-lg bg-slate-700 text-2xl'
             disabled
           >
             <svg
