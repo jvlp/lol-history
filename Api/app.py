@@ -1,7 +1,7 @@
 from time import time
 from typing import Any, Dict, List
 
-from flask import Flask, request
+from flask import Flask, render_template, request
 from flask_cors import CORS
 
 from utils import *
@@ -10,7 +10,7 @@ app = Flask(__name__)
 CORS(app)
 
 
-@app.route("/pname/<player_name>")
+@app.route("/api/pname/<player_name>")
 def player(player_name: str) -> Dict[str, Any]:
     start = time()
     print(request)
@@ -19,7 +19,7 @@ def player(player_name: str) -> Dict[str, Any]:
     return player
 
 
-@app.route("/match/<match_id>")
+@app.route("/api/match/<match_id>")
 def match(match_id: str) -> Dict[str, Any]:
     start = time()
     print(request)
@@ -28,7 +28,7 @@ def match(match_id: str) -> Dict[str, Any]:
     return match_data
 
 
-@app.route("/last_match/<name>")
+@app.route("/api/last_match/<name>")
 def last_match(name: str) -> Dict[str, Any]:
     start = time()
     print(request)
@@ -41,7 +41,7 @@ def last_match(name: str) -> Dict[str, Any]:
     return match_data
 
 
-@app.route("/match_history/<player_name>")
+@app.route("/api/match_history/<player_name>")
 def match_history(player_name: str) -> List[Dict[str, Any]]:
     start = time()
     print(request)
@@ -50,15 +50,10 @@ def match_history(player_name: str) -> List[Dict[str, Any]]:
     return history_data
 
 
+@app.route('/')
+def index():
+    return render_template("index.html")
+
+
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")
-
-    # player = dict()
-    # player = get_player("Blaymus")
-    # print(player)
-    # match_ids = get_match_ids(player["puuid"])
-    # print(match_ids)
-    # match = get_match(match_ids[0])
-
-    # for p in match["info"]["participants"]:
-    #     print(f"{p["summonerName"]} - {p["championName"]} - {"win" if p["win"] else "lose"}")

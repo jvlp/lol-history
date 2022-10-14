@@ -11,7 +11,8 @@ export default function Match() {
   const { data, isFetching, error, refetch } = useQuery(
     matchId,
     async () => {
-      const endpoint = `http://192.168.0.114:5000/match/${matchId}`;
+      // const endpoint = `http://192.168.0.114:5000/match/${matchId}`;
+      const endpoint = `http://localhost:5000/api/match/${matchId}`;
       console.log(endpoint);
       const response = await axios.get(endpoint);
       console.log(response.data);
@@ -23,14 +24,14 @@ export default function Match() {
     }
   );
 
-  if (isFetching) {
-    return <div>Loading...</div>;
-  }
-
-  const maxDmg = Math.max(...data.participants.map((p) => {
-      return p.totalDamageDealtToChampions;
-    })
-  );
+  const getMaxDmg = () => {
+    return Math.max(
+      ...data.participants.map((p) => {
+        return p.totalDamageDealtToChampions;
+      })
+    );
+  };
+  const maxDmg = !isFetching ? getMaxDmg() : 0;
 
   return (
     <div className='w-full min-h-screen overflow-hidden box-border flex flex-col justify-center items-center bg-neutral-900 bg-opacity-50 mt-auto'>

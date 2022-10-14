@@ -18,7 +18,8 @@ export default function History() {
   const { data, isFetching, error, refetch } = useQuery(
     name,
     async () => {
-      const endpoint = `http://192.168.0.114:5000/match_history/${name}`;
+      // const endpoint = `http://192.168.0.114:5000/match_history/${name}`;
+      const endpoint = `http://localhost:5000/api/match_history/${name}`;
       console.log(endpoint);
       const response = await axios.get(endpoint);
       console.log(response.data);
@@ -37,7 +38,6 @@ export default function History() {
       <div className='bg-neutral-900 bg-opacity-50'>
         <HistoryHeaderSkeleton />
         <div className='flex flex-col w-full h-full justify-center items-center'>
-          {/* <span className='text-3xl'>Loading...</span> */}
           {new Array(20).fill(0).map((_, index) => (
             <MatchCardSkeleton key={index} />
           ))}
@@ -45,7 +45,7 @@ export default function History() {
       </div>
     );
   }
-  // console.log(data);
+
   return (
     <div className='w-full flex flex-col justify-center items-between bg-neutral-900 bg-opacity-50'>
       <HistoryHeader data={data} refetch={refetch} />

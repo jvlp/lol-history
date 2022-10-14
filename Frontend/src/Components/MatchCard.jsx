@@ -58,7 +58,7 @@ export default function MatchCard({ players, info }) {
       ' border-transparent w-full xl:w-fit hover:border-blue-500 border-l-8 bg-win mb-4 py-2 pl-4 pr-1 flex justify-evenly rounded-2xl cursor-pointer';
     text = 'text-blue-500';
     result = 'Victory';
-    border = 'border-blue-500';
+    border = 'border-blue-400';
   } else {
     containerClass =
       ' border-transparent w-full xl:w-fit hover:border-red-500 border-l-8 bg-lose mb-4 py-2 pl-4 pr-1 flex justify-evenly rounded-2xl cursor-pointer';
@@ -90,19 +90,17 @@ export default function MatchCard({ players, info }) {
             <p className=' text-gray-400 '>{getGameDuration(gameDuration)}</p>
           </div>
         </div>
-        {/* <div className='flex flex-row text-center justify-center items-center lg:min-w-[10rem]'> */}
         <div className='flex flex-col text-center justify-center items-center lg:ml-15'>
           <div className='flex flex-col sm:flex-row justify-center items-center'>
             <img
               src={championIconURL}
-              className='w-16 h-16 sm:mr-5 lg:w-28 lg:h-28 rounded-full border-2'
+              className={'w-16 h-16 sm:mr-5 lg:w-28 lg:h-28 rounded-full border-2 ' + border}
             ></img>
             <div className='flex flex-col'>
               <span className=' text-lg font-semibold'>
                 {kills + '/' + deaths + '/' + assists}
               </span>
               <span className=' text-lg'>{cs} CS</span>
-              {/* <span className=' text-lg font-bold'>{championName}</span> */}
             </div>
           </div>
           <div className='md:flex flex-row mx-2 hidden min-w-[13rem]'>
