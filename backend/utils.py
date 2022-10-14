@@ -1,24 +1,12 @@
-import os
+from threading import Thread
 from typing import Any, Dict, List
 
-from dotenv import load_dotenv
 from requests import get
-from threading import Thread
 
+from constants import HEADER
 from mongo import check_db, update_db
 
-load_dotenv()
-
-DATE_FORMAT = "%d/%m/%Y - %H:%M:%S"
-EXPIRATION_TIMEOUT = 60*60  # 1 hour
-HEADER = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36",
-    "Accept-Language": "pt-BR,pt;q=0.8",
-    "Accept-Charset": "application/x-www-form-urlencoded; charset=UTF-8",
-    "X-Riot-Token": os.getenv("API_KEY")
-}
-
-thread_return = [{} for i in range(0, 100)]
+setup_match_thread_return = [{} for i in range(0, 100)]
 
 
 def get_player(player_name: str) -> Dict[str, Any]:
@@ -48,7 +36,7 @@ def get_match(match_id: str) -> Dict[str, Any]:
         res_matchs = get(url, headers=HEADER)
         match = res_matchs.json()
         update_db({"matchId": match_id}, "matches", match)
-    
+
     return match["info"]
 
 
@@ -62,9 +50,9 @@ def setup_history(player: Dict[str, Any], player_name: str, match_ids: List[str]
     for thread in threads:
         thread.join()
 
-    global thread_return
-    res = list(filter(lambda a: a != {}, thread_return))
-    thread_return = [{} for i in range(0, 100)]
+    global setup_match_thread_return
+    res = list(filter(lambda a: a != {}, setup_match_thread_return))
+    setup_match_thread_return = [{} for i in range(0, 100)]
 
     return res
 
@@ -109,7 +97,7 @@ def setup_match(player_name: str, player: Dict[str, Any], id: str, index: int) -
         match["participants"].append(player)
 
     match["info"] = info
-    thread_return[index] = match
+    setup_match_thread_return[index] = match
 
 
 def get_match_history(player_name: str) -> List[Dict[str, Any]]:

@@ -4,11 +4,10 @@ from typing import Any, Dict, Tuple
 
 from pymongo import MongoClient
 
+from constants import EXPIRATION_TIMEOUT
+
 client = MongoClient("localhost", 27017)
 db = client.lol_history
-
-DATE_FORMAT = "%d/%m/%Y - %H:%M:%S"
-EXPIRATION_TIMEOUT = 60*60  # 1 hour
 
 
 def did_expire(old_date: datetime, expiration_time: int) -> bool:
