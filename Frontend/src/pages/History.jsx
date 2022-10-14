@@ -34,7 +34,7 @@ export default function History() {
 
   if (isFetching) {
     return (
-      <div>
+      <div className='bg-neutral-900 bg-opacity-50'>
         <HistoryHeaderSkeleton />
         <div className='flex flex-col w-full h-full justify-center items-center'>
           {/* <span className='text-3xl'>Loading...</span> */}
