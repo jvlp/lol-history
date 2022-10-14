@@ -1,5 +1,4 @@
 from datetime import datetime
-from http import client
 from typing import Any, Dict, Tuple
 
 from pymongo import MongoClient
@@ -18,26 +17,29 @@ def update_db(key: Dict[str, str], collection: str, new_data: Dict[str, Any]) ->
     date = {"last_update": datetime.now()}
     if collection == "players":
         db[collection].update_one(key, {"$set": new_data | date}, upsert=True)
-    # if collection == "history":
-    #     db[collection].update_one(key, {"$set": key | {"history": new_data} | date}, upsert=True)
     if collection == "matches":
         db[collection].insert_one(key | new_data)
 
 
-def check_db(collection: str, key: Dict[str, str]) -> Tuple[bool, bool, Dict[str, Any]]:
-    entry_not_found = expired = True
+def check_db(collection: str, key: Dict[str, str]) -> Tuple[bool, Dict[str, Any]]:
+    # entry_not_found = expired = False
+    fetch = False
     data = db[collection].find_one(key)
-    if data:
-        entry_not_found = False
-        if collection == "matches" or not did_expire(data["last_update"], EXPIRATION_TIMEOUT):
-            print(f"{key} fetched from {collection} collection")
-            expired = False
-        else:
-            print(f"Expiration timeout reached on entry {key} of {collection} collection")
-            print("Fetching data from riot games")
-    else:
+
+    if data is None:
         data = dict()
+        # entry_not_found = True
+        fetch = True
         print(f"Entry {key} not found in {collection}")
         print("Fetching data from riot games")
+        return fetch, data
 
-    return entry_not_found, expired, data
+    elif collection != "matches" and did_expire(data["last_update"], EXPIRATION_TIMEOUT):
+        print(f"Expiration timeout reached on entry {key} of {collection} collection")
+        print("Fetching data from riot games")
+        # expired = True
+        fetch = True
+        return fetch, data
+
+    print(f"{key} fetched from {collection} collection")
+    return fetch, data

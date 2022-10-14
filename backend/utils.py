@@ -10,16 +10,16 @@ setup_match_thread_return = [{} for i in range(0, 100)]
 
 
 def get_player(player_name: str) -> Dict[str, Any]:
-    entry_not_found, expired, player = check_db(
+    fetch, player_data = check_db(
         "players", {"name": player_name})
 
-    if entry_not_found or expired:
+    if fetch:
         url = f"https://br1.api.riotgames.com/lol/summoner/v4/summoners/by-name/{player_name}"
-        player = get(url, headers=HEADER)
-        player = player.json()
-        update_db({"name": player_name}, "players", player)
+        player_data = get(url, headers=HEADER)
+        player_data = player_data.json()
+        update_db({"name": player_name}, "players", player_data)
 
-    return player
+    return player_data
 
 
 def get_match_ids(player_puuid: str) -> List[str]:
@@ -29,15 +29,15 @@ def get_match_ids(player_puuid: str) -> List[str]:
 
 
 def get_match(match_id: str) -> Dict[str, Any]:
-    entry_not_found, _, match = check_db("matches", {"matchId": match_id})
+    fetch, match_data = check_db("matches", {"matchId": match_id})
 
-    if entry_not_found:
+    if fetch:
         url = f"https://americas.api.riotgames.com/lol/match/v5/matches/{match_id}"
         res_matchs = get(url, headers=HEADER)
-        match = res_matchs.json()
-        update_db({"matchId": match_id}, "matches", match)
+        match_data = res_matchs.json()
+        update_db({"matchId": match_id}, "matches", match_data)
 
-    return match["info"]
+    return match_data["info"]
 
 
 def setup_history(player: Dict[str, Any], player_name: str, match_ids: List[str]) -> List[Dict[str, Any]]:
