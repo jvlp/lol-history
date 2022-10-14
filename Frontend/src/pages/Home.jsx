@@ -1,20 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function Home() {
-  const [name, setName] = useState('');
+  const nameRef = useRef();
   const navigate = useNavigate();
 
   useEffect(() => {
     document.title = 'LoL History - Home';
   }, []);
 
-  function handleChange(event) {
-    setName(event.target.value);
-  }
-
   function handleKeyDown(event) {
-    if (event.key === 'Enter') navigate(`/summoner/${name}`);
+    if (event.key === 'Enter') navigate(`/summoner/${nameRef.current.value}`);
   }
 
   return (
@@ -23,10 +19,13 @@ export default function Home() {
         className='p-2 rounded-lg m-4 placeholder:text-center'
         placeholder='Summoner Name'
         type='text'
-        onChange={handleChange}
+        ref={nameRef}
         onKeyDown={handleKeyDown}
       />
-      <button className='py-2 px-4 rounded-lg' onClick={() => navigate(`/summoner/${name}`)}>
+      <button
+        className=' rounded-lg bg-slate-700'
+        onClick={() => navigate(`/summoner/${nameRef.current.value}`)}
+      >
         Fetch
       </button>
     </div>
