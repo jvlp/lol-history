@@ -27,7 +27,7 @@ export default function Player({ participant, maxDmg }) {
   const championIconURL = `https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-tiles/${championId}/${championId}000.jpg`;
   return (
     <div
-      className='flex flex-row justify-center items-center hover:bg-neutral-600 bg-neutral-800 mb-2 px-8 py-2 rounded-xl cursor-pointer'
+      className='flex flex-row justify-center items-center hover:bg-neutral-600 bg-neutral-800 mb-2 px-4 py-2 rounded-xl cursor-pointer'
       onClick={() => navigate(`/summoner/${summonerName}`)}
     >
       <img
@@ -37,11 +37,11 @@ export default function Player({ participant, maxDmg }) {
         }
       ></img>
 
-      <div className='min-w-[6rem] max-w-[6rem] sm:min-w-[10rem] sm:max-w-[10rem] px-2 flex flex-row items-center'>
+      <div className='min-w-[5rem] max-w-[5rem] sm:min-w-[10rem] sm:max-w-[10rem] px-2 mr-2 flex flex-row items-center'>
         <span className='truncate'>{summonerName}</span>
       </div>
 
-      <div className='hidden md:flex flex-row min-w-[13rem] max-w-[13rem]'>
+      <div className='hidden md:flex flex-row min-w-[13rem] max-w-[13rem] mr-3'>
         {items.map((item, index) => {
           if (item != 0) {
             return (
@@ -69,7 +69,7 @@ export default function Player({ participant, maxDmg }) {
         <span className='whitespace-nowrap min-w-[5rem] max-w-[5rem]'>
           {totalMinionsKilled} CS
         </span>
-        <div className='hidden md:block text-center lg:min-w-[8rem] lg:max-w-[8rem]'>
+        <div className='hidden lg:block text-center lg:min-w-[8rem] lg:max-w-[8rem]'>
           <span className=''>
             {totalDamageDealtToChampions.toLocaleString()} Damage
           </span>

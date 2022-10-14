@@ -48,13 +48,13 @@ def get_match(match_id: str) -> Dict[str, Any]:
         res_matchs = get(url, headers=HEADER)
         match = res_matchs.json()
         update_db({"matchId": match_id}, "matches", match)
-
+    
     return match["info"]
 
 
 def setup_history(player: Dict[str, Any], player_name: str, match_ids: List[str]) -> List[Dict[str, Any]]:
     threads = [Thread(target=setup_match, args=(
-        player, player_name, id, i)) for i, id in enumerate(match_ids)]
+        player_name, player, id, i)) for i, id in enumerate(match_ids)]
 
     for thread in threads:
         thread.start()
@@ -69,7 +69,7 @@ def setup_history(player: Dict[str, Any], player_name: str, match_ids: List[str]
     return res
 
 
-def setup_match(player_name, player, id, index):
+def setup_match(player_name: str, player: Dict[str, Any], id: str, index: int) -> None:
     p_name = player["name"]
     p_level = player["summonerLevel"]
     p_icon = player["profileIconId"]

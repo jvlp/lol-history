@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import axios from 'axios';
 import Player from '../Components/Player';
+import PlayerSkeleton from '../Components/skeleton/PlayerSkeleton';
 
 export default function Match() {
   const { matchId } = useParams();
@@ -37,21 +38,27 @@ export default function Match() {
         <div className='text-blue-500 text-2xl font-semibold py-2 rounded-3xl'>
           Blue Team
         </div>
-        {data.participants.map(
-          (participant, index) =>
-            participant.teamId === 100 && (
-              <Player participant={participant} maxDmg={maxDmg} key={index} />
-            )
-        )}
+        {isFetching &&
+          new Array(5).fill(0).map(() => <PlayerSkeleton team={'blue'} />)}
+        {!isFetching &&
+          data.participants.map(
+            (participant, index) =>
+              participant.teamId === 100 && (
+                <Player participant={participant} maxDmg={maxDmg} key={index} />
+              )
+          )}
         <div className=' text-red-500 text-2xl font-semibold mt-10 pb-2 rounded-3xl'>
           Red Team
         </div>
-        {data.participants.map(
-          (participant, index) =>
-            participant.teamId === 200 && (
-              <Player participant={participant} maxDmg={maxDmg} key={index} />
-            )
-        )}
+        {isFetching &&
+          new Array(5).fill(0).map(() => <PlayerSkeleton team={'red'} />)}
+        {!isFetching &&
+          data.participants.map(
+            (participant, index) =>
+              participant.teamId === 200 && (
+                <Player participant={participant} maxDmg={maxDmg} key={index} />
+              )
+          )}
       </div>
     </div>
   );
