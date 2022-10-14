@@ -1,12 +1,24 @@
 from threading import Thread
+from time import sleep
 from typing import Any, Dict, List
 
 from requests import get
+from requests.structures import CaseInsensitiveDict
 
 from constants import HEADER
 from mongo import check_db, update_db
 
+#global variable to get threads return
 setup_match_thread_return = [{} for i in range(0, 100)]
+
+
+def handle_rate_limit(header: CaseInsensitiveDict[str]) -> bool:
+    if "Retry-After" in header:
+        retry_after = (int(header['Retry-After']) + 1)
+        print(f"API rate limit exceeded, waiting {retry_after}s to try again")
+        sleep(retry_after)
+        return True
+    return False
 
 
 def get_player(player_name: str) -> Dict[str, Any]:
@@ -16,6 +28,8 @@ def get_player(player_name: str) -> Dict[str, Any]:
     if fetch:
         url = f"https://br1.api.riotgames.com/lol/summoner/v4/summoners/by-name/{player_name}"
         player_data = get(url, headers=HEADER)
+        if handle_rate_limit(player_data.headers):
+            player_data = get(url, headers=HEADER)
         player_data = player_data.json()
         update_db({"name": player_name}, "players", player_data)
 
@@ -25,6 +39,8 @@ def get_player(player_name: str) -> Dict[str, Any]:
 def get_match_ids(player_puuid: str) -> List[str]:
     url = f"https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/{player_puuid}/ids?start=0&count=20"
     res_match_ids = get(url, headers=HEADER)
+    if handle_rate_limit(res_match_ids.headers):
+        res_match_ids = get(url, headers=HEADER)
     return list(res_match_ids.json())
 
 
@@ -34,6 +50,10 @@ def get_match(match_id: str) -> Dict[str, Any]:
     if fetch:
         url = f"https://americas.api.riotgames.com/lol/match/v5/matches/{match_id}"
         res_matchs = get(url, headers=HEADER)
+
+        if handle_rate_limit(res_matchs.headers):
+            res_matchs = get(url, headers=HEADER)
+
         match_data = res_matchs.json()
         update_db({"matchId": match_id}, "matches", match_data)
 
