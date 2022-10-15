@@ -4,7 +4,7 @@ from typing import Any, Dict, List
 from flask import Flask, render_template, request
 from flask_cors import CORS
 
-from utils import *
+from utils import get_match, get_match_history, get_match_ids, get_player
 
 app = Flask(__name__)
 CORS(app)
@@ -12,7 +12,7 @@ CORS(app)
 
 @app.route("/api/pname/<player_name>")
 def player(player_name: str) -> Dict[str, Any]:
-    print() # better organize log
+    print()  # better organize log
     print("--------------------------------------------------------------------------------------------")
     start = time()
     print(request)
@@ -23,7 +23,7 @@ def player(player_name: str) -> Dict[str, Any]:
 
 @app.route("/api/match/<match_id>")
 def match(match_id: str) -> Dict[str, Any]:
-    print() # better organize log
+    print()  # better organize log
     print("--------------------------------------------------------------------------------------------")
     start = time()
     print(request)
@@ -34,14 +34,14 @@ def match(match_id: str) -> Dict[str, Any]:
 
 @app.route("/api/last_match/<name>")
 def last_match(name: str) -> Dict[str, Any]:
-    print() # better organize log
+    print()  # better organize log
     print("--------------------------------------------------------------------------------------------")
     start = time()
     print(request)
     player_data = get_player(name)
     print(player_data)
 
-    match_ids = get_match_ids(player_data["puuid"])
+    match_ids = get_match_ids(player_data["puuid"])  # type: ignore
     match_data = get_match(match_ids[0])
     print(f"response time for {request.url_rule}: {time() - start}s")
     return match_data
@@ -49,7 +49,7 @@ def last_match(name: str) -> Dict[str, Any]:
 
 @app.route("/api/match_history/<player_name>")
 def match_history(player_name: str) -> List[Dict[str, Any]]:
-    print() # better organize log
+    print()  # better organize log
     print("--------------------------------------------------------------------------------------------")
     start = time()
     print(request)

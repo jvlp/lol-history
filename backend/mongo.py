@@ -22,16 +22,14 @@ def update_db(key: Dict[str, str], collection: str, new_data: Dict[str, Any]) ->
         if collection == "matches":
             db[collection].insert_one(key | new_data)
 
-        print(f"new entry {key} saved in {collection} collection successfully\n")
+        print(f"new entry {key} saved in {collection} collection successfully")
         return new_data
     except WriteError as e:
         print(e)
-        print()
         return None
 
 
 def check_db(collection: str, key: Dict[str, str]) -> Tuple[bool, Dict[str, Any]]:
-    print()
     # entry_not_found = expired = False
     fetch = False
     data = db[collection].find_one(key)
@@ -45,7 +43,7 @@ def check_db(collection: str, key: Dict[str, str]) -> Tuple[bool, Dict[str, Any]
         return fetch, data
 
     elif collection != "matches" and did_expire(data["last_update"], EXPIRATION_TIMEOUT):
-        print(f"{key} of {collection} collection expired")
+        print(f"Key {key} of {collection} collection expired")
         print("Fetching data from riot games")
         # expired = True
         fetch = True

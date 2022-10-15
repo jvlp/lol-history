@@ -2,14 +2,14 @@ from threading import Thread
 from time import sleep
 from typing import Any, Dict, List
 
-from requests import get
+import requests
 from requests.structures import CaseInsensitiveDict
 
+import mongo
 from constants import HEADER
-from mongo import check_db, update_db
 
-#global variable to get threads return
-setup_match_thread_return = [{} for i in range(0, 100)]
+# global variable to get threads return
+setup_match_thread_return: List[Dict[str, Any]] = [{} for _ in range(0, 100)]
 
 
 def handle_rate_limit(header: CaseInsensitiveDict[str]) -> bool:
@@ -22,47 +22,47 @@ def handle_rate_limit(header: CaseInsensitiveDict[str]) -> bool:
 
 
 def get_player(player_name: str) -> Dict[str, Any]:
-    fetch, player_data = check_db(
+    fetch, player_data = mongo.check_db(
         "players", {"name": player_name})
 
     if fetch:
         url = f"https://br1.api.riotgames.com/lol/summoner/v4/summoners/by-name/{player_name}"
-        player_data = get(url, headers=HEADER)
+        player_data = requests.get(url, headers=HEADER)
         if handle_rate_limit(player_data.headers):
-            player_data = get(url, headers=HEADER)
+            player_data = requests.get(url, headers=HEADER)
         player_data = player_data.json()
-        update_db({"name": player_name}, "players", player_data)
+        mongo.update_db({"name": player_name}, "players", player_data)
 
     return player_data
 
 
 def get_match_ids(player_puuid: str) -> List[str]:
     url = f"https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/{player_puuid}/ids?start=0&count=20"
-    res_match_ids = get(url, headers=HEADER)
+    res_match_ids = requests.get(url, headers=HEADER)
     if handle_rate_limit(res_match_ids.headers):
-        res_match_ids = get(url, headers=HEADER)
+        res_match_ids = requests.get(url, headers=HEADER)
     return list(res_match_ids.json())
 
 
 def get_match(match_id: str) -> Dict[str, Any]:
-    fetch, match_data = check_db("matches", {"matchId": match_id})
+    fetch, match_data = mongo.check_db("matches", {"matchId": match_id})
 
     if fetch:
         url = f"https://americas.api.riotgames.com/lol/match/v5/matches/{match_id}"
-        res_matchs = get(url, headers=HEADER)
+        res_matchs = requests.get(url, headers=HEADER)
 
         if handle_rate_limit(res_matchs.headers):
-            res_matchs = get(url, headers=HEADER)
+            res_matchs = requests.get(url, headers=HEADER)
 
-        match_data = res_matchs.json()
-        if not update_db({"matchId": match_id}, "matches", match_data):
-            return match_data # bad request
+        match_data: Dict[str, Any] = res_matchs.json()
+        if not mongo.update_db({"matchId": match_id}, "matches", match_data):
+            return match_data  # bad request
     return match_data["info"]
 
 
 def setup_history(player: Dict[str, Any], player_name: str, match_ids: List[str]) -> List[Dict[str, Any]]:
     threads = [Thread(target=setup_match, args=(
-        player_name, player, id, i)) for i, id in enumerate(match_ids)]
+        player, player_name, id, i)) for i, id in enumerate(match_ids)]
 
     for thread in threads:
         thread.start()
@@ -72,18 +72,18 @@ def setup_history(player: Dict[str, Any], player_name: str, match_ids: List[str]
 
     global setup_match_thread_return
     res = list(filter(lambda a: a != {}, setup_match_thread_return))
-    setup_match_thread_return = [{} for i in range(0, 100)]
+    setup_match_thread_return = [{} for _ in range(0, 100)]
 
     return res
 
 
-def setup_match(player_name: str, player: Dict[str, Any], id: str, index: int) -> None:
+def setup_match(player: Dict[str, Any], player_name: str, id: str, index: int) -> None:
     p_name = player["name"]
     p_level = player["summonerLevel"]
     p_icon = player["profileIconId"]
 
     match_data = get_match(id)
-    if 'participants' not in match_data: # bad request
+    if "participants" not in match_data:
         return None
     participants = match_data["participants"]
     match = dict()
