@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import queues from '../jsons/queues.json';
+import runes from '../jsons/runesReforged.json';
 
 function getGameDuration(timestamp) {
   var a = new Date(timestamp * 1000);
@@ -43,13 +44,35 @@ export default function MatchCard({ players, info }) {
     kills,
     deaths,
     assists,
-    championName,
     championId,
     matchId,
     items,
     cs,
-    totalDamageDealt,
   } = info;
+
+  const getPerkIndex = (n) =>
+    String(n).charAt(1) == 9 ? 1 : String(n).charAt(1);
+
+  const getRuneObj = (perkId, slotIndex) => {
+    console.log();
+    return runes[primaryPerkIndex]?.slots[slotIndex].runes.find(
+      (rune) => rune.id == perkId
+    );
+  };
+
+  const getRuneUrl = (rune) => {
+    const baseUrl =
+      'https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/';
+    return baseUrl + rune.icon.toLowerCase();
+  };
+
+  const primaryPerkId = info.perks.styles[0].selections[0].perk;
+  const primaryPerkIndex = getPerkIndex(primaryPerkId);
+  const primaryPerk = getRuneObj(primaryPerkId, 0);
+
+  const secondaryPerkId = info.perks.styles[1].selections[0].perk;
+  const secondaryPerkIndex = getPerkIndex(secondaryPerkId);
+
   let containerClass, text, result, border;
   const championIconURL = `https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-tiles/${championId}/${championId}000.jpg`;
 
@@ -94,16 +117,29 @@ export default function MatchCard({ players, info }) {
           <div className='flex flex-col sm:flex-row justify-center items-center'>
             <img
               src={championIconURL}
-              className={'w-16 h-16 sm:mr-5 lg:w-28 lg:h-28 rounded-full border-2 ' + border}
+              className={
+                'w-16 h-16 sm:mr-5 lg:w-28 lg:h-28 rounded-full border-2 ' +
+                border
+              }
             ></img>
             <div className='flex flex-col'>
               <span className=' text-lg font-semibold'>
                 {kills + '/' + deaths + '/' + assists}
               </span>
               <span className=' text-lg'>{cs} CS</span>
+              <div className='flex flex-row'>
+                <img
+                  src={getRuneUrl(primaryPerk)}
+                  className={`w-8 h-8 mx-px my-1 rounded-lg`}
+                ></img>
+                <img
+                  src={getRuneUrl(runes[secondaryPerkIndex])}
+                  className={`w-7 h-7 mx-px my-1 rounded-lg`}
+                ></img>
+              </div>
             </div>
           </div>
-          <div className='md:flex flex-row mx-2 hidden min-w-[13rem]'>
+          <div className='hidden md:flex flex-row mx-2 min-w-[13rem]'>
             {items.map((item, index) => {
               if (item != 0) {
                 return (

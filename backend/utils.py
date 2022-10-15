@@ -109,6 +109,7 @@ def setup_match(player_name: str, player: Dict[str, Any], id: str, index: int) -
                 "cs": p["totalMinionsKilled"],
                 "totalDamageDealt": p["totalDamageDealtToChampions"],
                 "matchId": id,
+                "perks": p["perks"],
             })
 
         player = {
