@@ -19,7 +19,8 @@ export default function History() {
     name,
     async () => {
       // const endpoint = `http://192.168.0.114:5000/match_history/${name}`;
-      const endpoint = `http://localhost:5000/api/match_history/${name}`;
+      const baseUrl = window.location.origin
+      const endpoint = `${baseUrl}/api/match_history/${name}`;
       console.log(endpoint);
       const response = await axios.get(endpoint);
       console.log(response.data);

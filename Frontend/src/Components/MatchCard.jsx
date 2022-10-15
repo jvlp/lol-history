@@ -113,12 +113,12 @@ export default function MatchCard({ players, info }) {
             <p className=' text-gray-400 '>{getGameDuration(gameDuration)}</p>
           </div>
         </div>
-        <div className='flex flex-col text-center justify-center items-center lg:ml-15'>
-          <div className='flex flex-col sm:flex-row justify-center items-center'>
+        <div className='flex flex-col text-center justify-center items-center mr-5 lg:ml-15'>
+          <div className='flex flex-col sm:flex-row justify-center items-center mb-2'>
             <img
               src={championIconURL}
               className={
-                'w-16 h-16 sm:mr-5 lg:w-28 lg:h-28 rounded-full border-2 ' +
+                'w-20 h-20 sm:mr-5 lg:w-28 lg:h-28 rounded-full ' +
                 border
               }
             ></img>

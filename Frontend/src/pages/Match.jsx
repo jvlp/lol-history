@@ -12,7 +12,8 @@ export default function Match() {
     matchId,
     async () => {
       // const endpoint = `http://192.168.0.114:5000/match/${matchId}`;
-      const endpoint = `http://localhost:5000/api/match/${matchId}`;
+      const baseUrl = window.location.origin
+      const endpoint = `${baseUrl}/api/match/${matchId}`;
       console.log(endpoint);
       const response = await axios.get(endpoint);
       console.log(response.data);
@@ -39,7 +40,7 @@ export default function Match() {
           Blue Team
         </div>
         {isFetching &&
-          new Array(5).fill(0).map(() => <PlayerSkeleton team={'blue'} />)}
+          new Array(5).fill(0).map((_, index) => <PlayerSkeleton team={'blue'} key={index} />)}
         {!isFetching &&
           data.participants.map(
             (participant, index) =>
@@ -51,7 +52,7 @@ export default function Match() {
           Red Team
         </div>
         {isFetching &&
-          new Array(5).fill(0).map(() => <PlayerSkeleton team={'red'} />)}
+          new Array(5).fill(0).map((_, index) => <PlayerSkeleton team={'red'} key={index} />)}
         {!isFetching &&
           data.participants.map(
             (participant, index) =>
