@@ -55,8 +55,8 @@ def get_match(match_id: str) -> Dict[str, Any]:
             res_matchs = get(url, headers=HEADER)
 
         match_data = res_matchs.json()
-        update_db({"matchId": match_id}, "matches", match_data)
-
+        if not update_db({"matchId": match_id}, "matches", match_data):
+            return match_data # bad request
     return match_data["info"]
 
 
@@ -83,6 +83,8 @@ def setup_match(player_name: str, player: Dict[str, Any], id: str, index: int) -
     p_icon = player["profileIconId"]
 
     match_data = get_match(id)
+    if 'participants' not in match_data: # bad request
+        return None
     participants = match_data["participants"]
     match = dict()
     info = dict()
