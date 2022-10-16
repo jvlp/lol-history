@@ -23,9 +23,12 @@ export default function Player({ participant, maxDmg }) {
     win,
   } = participant;
 
-  const getPerkIndex = (n) =>
-    String(n).charAt(1) == 9 ? 1 : String(n).charAt(1);
-
+  const getPerkIndex = (n) => {
+    if (String(n).substring(0, 2) == 99) return 1;
+    if (String(n).substring(0, 2) == 91) return 0;
+    return String(n).charAt(1);
+  };
+  
   const getRuneObj = (perkId, slotIndex) => {
     console.log();
     return runes[primaryPerkIndex]?.slots[slotIndex].runes.find(
