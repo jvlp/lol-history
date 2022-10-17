@@ -58,8 +58,10 @@ def match_history(player_name: str) -> List[Dict[str, Any]]:
     return history_data
 
 
-@app.route('/')
-def index():
+# render index.html for all routes
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def catch_all(path) -> str:
     return render_template("index.html")
 
 
