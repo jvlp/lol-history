@@ -8,7 +8,7 @@ import PlayerSkeleton from '../Components/skeleton/PlayerSkeleton';
 export default function Match() {
   const { matchId } = useParams();
 
-  const { data, isFetching, error, refetch } = useQuery(
+  const { data, isFetching } = useQuery(
     matchId,
     async () => {
       // const endpoint = `http://192.168.0.114:5000/api/match/${matchId}`;

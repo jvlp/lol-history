@@ -1,6 +1,7 @@
 import React from 'react';
 import ProgressBar from '@ramonak/react-progress-bar';
 import { useNavigate } from 'react-router-dom';
+import { getPerkIndex, getRuneObj, getRuneUrl } from './RuneUtils';
 import runes from '../jsons/runesReforged.json';
 
 export default function Player({ participant, maxDmg }) {
@@ -23,35 +24,17 @@ export default function Player({ participant, maxDmg }) {
     win,
   } = participant;
 
-  const getPerkIndex = (n) => {
-    if (String(n).substring(0, 2) == 99) return 1;
-    if (String(n).substring(0, 2) == 91) return 0;
-    return String(n).charAt(1);
-  };
-  
-  const getRuneObj = (perkId, slotIndex) => {
-    console.log();
-    return runes[primaryPerkIndex]?.slots[slotIndex].runes.find(
-      (rune) => rune.id == perkId
-    );
-  };
-
-  const getRuneUrl = (rune) => {
-    const baseUrl =
-      'https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/';
-    return baseUrl + rune.icon.toLowerCase();
-  };
-
   const primaryPerkId = participant.perks.styles[0].selections[0].perk;
   const primaryPerkIndex = getPerkIndex(primaryPerkId);
-  const primaryPerk = getRuneObj(primaryPerkId, 0);
+  const primaryPerk = getRuneObj(primaryPerkIndex, primaryPerkId, 0);
 
   const secondaryPerkId = participant.perks.styles[1].selections[0].perk;
   const secondaryPerkIndex = getPerkIndex(secondaryPerkId);
 
-  const border = teamId === 100 ? 'border-blue-500' : 'border-red-500';
   const items = [item0, item1, item2, item3, item4, item5];
+  const border = teamId === 100 ? 'border-blue-500' : 'border-red-500';
   const championIconURL = `https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-tiles/${championId}/${championId}000.jpg`;
+  
   return (
     <div
       className='flex flex-row justify-center items-center hover:bg-neutral-600 bg-neutral-800 mb-2 px-4 py-2 mx-1 rounded-xl cursor-pointer'
@@ -116,6 +99,7 @@ export default function Player({ participant, maxDmg }) {
             completed={(totalDamageDealtToChampions / maxDmg) * 100}
             height={'7px'}
             bgColor={win ? '#3482F6' : '#EF4444'}
+            baseBgColor={'#454545'}
             isLabelVisible={false}
           />
         </div>
