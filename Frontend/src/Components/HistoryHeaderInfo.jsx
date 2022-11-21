@@ -8,19 +8,19 @@ export default function HistoryHeaderInfo({ data }) {
   const percentage = Math.floor((numWin / numMatches) * 100);
   const numLoss = numMatches - numWin;
 
-  const counts = new Array(999).fill(0);
+  const countsPlayed = new Array(999).fill(0);
   const countsWin = new Array(999).fill(0);
   const comulativeKda = new Array(999).fill(0);
 
   data.map((match) => {
     const id = match.info.championId;
     const { win, kills, deaths, assists } = match.info;
-    counts[id]++;
+    countsPlayed[id]++;
     countsWin[id] = win ? countsWin[id] + 1 : countsWin[id];
-    comulativeKda[id] += (kills + assists) / deaths;
+    comulativeKda[id] += deaths != 0 ? (kills + assists) / deaths : 1;
   });
 
-  const countsCpy = [...counts];
+  const countsCpy = [...countsPlayed];
 
   const topPlayed = [...countsCpy]
     .sort((a, b) => b - a)
@@ -28,10 +28,9 @@ export default function HistoryHeaderInfo({ data }) {
     .map((count) => {
       const index = countsCpy.indexOf(count);
       countsCpy[index] = 0;
-      
       return index;
     });
-  console.log();
+
   return (
     <div className='hidden lg:flex flex-row justify-center items-center'>
       <div className='flex flex-col items-center m-4'>
@@ -59,17 +58,19 @@ export default function HistoryHeaderInfo({ data }) {
               className={`
               font-semibold
               ${
-                countsWin[id] / counts[id] >= 0.5
+                countsWin[id] / countsPlayed[id] >= 0.5
                   ? 'text-cyan-400'
                   : 'text-red-500'
               }`}
             >
-              {Math.floor((countsWin[id] / counts[id]) * 100)}%
+              {Math.floor((countsWin[id] / countsPlayed[id]) * 100)}%
             </span>
             <span className='text-gray-300'>
-              {countsWin[id]}V - {counts[id] - countsWin[id]}D
+              {countsWin[id]}V - {countsPlayed[id] - countsWin[id]}D
             </span>
-            <span className='text-gray-300'> {(comulativeKda[id] / counts[id]).toFixed(1) + ' '}KDA</span>
+            <span className='text-gray-300'>
+              {(comulativeKda[id] / countsPlayed[id]).toFixed(1) + ' '}KDA
+            </span>
           </div>
         </div>
       ))}

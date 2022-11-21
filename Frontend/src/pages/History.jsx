@@ -59,9 +59,10 @@ export default function History() {
         ))}
       </div>
 
-      <div className='flex justify-center'>
+      {/* <div className='flex justify-center'>
         <button className='bg-slate-700 text-xl px-8 mb-4 '>Show More</button>
-      </div>
+      </div> */}
+
     </div>
   );
 }
