@@ -18,8 +18,8 @@ export default function History() {
   const { data, isFetching, error, refetch } = useQuery(
     name,
     async () => {
-      // const endpoint = `http://192.168.0.114:5000/api/match_history/${name}`;
-      const endpoint = `${window.location.origin}/api/match_history/${name}`;
+      const endpoint = `http://18.231.82.171/api/match_history/${name}`;
+      // const endpoint = `${window.location.origin}/api/match_history/${name}`;
       console.log(endpoint);
       const response = await axios.get(endpoint);
       console.log(response.data);

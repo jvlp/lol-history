@@ -11,8 +11,8 @@ export default function Match() {
   const { data, isFetching } = useQuery(
     matchId,
     async () => {
-      // const endpoint = `http://192.168.0.114:5000/api/match/${matchId}`;
-      const endpoint = `${window.location.origin}/api/match/${matchId}`;
+      const endpoint = `http://18.231.82.171/api/match/${matchId}`;
+      // const endpoint = `${window.location.origin}/api/match/${matchId}`;
       console.log(endpoint);
       const response = await axios.get(endpoint);
       console.log(response.data);

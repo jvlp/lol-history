@@ -4,9 +4,11 @@ from typing import Any, Dict, Tuple
 from pymongo import MongoClient
 from pymongo.errors import WriteError
 
-from constants import EXPIRATION_TIMEOUT
+from constants import EXPIRATION_TIMEOUT, MONGOPSW
 
-client = MongoClient("localhost", 27017)
+
+client = MongoClient(f"mongodb+srv://jvlp:{MONGOPSW}@lol-history.ch5iemn.mongodb.net/?retryWrites=true&w=majority")
+# client = MongoClient("localhost", 27017)
 db = client.lol_history
 
 
