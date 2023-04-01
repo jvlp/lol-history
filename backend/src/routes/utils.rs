@@ -1,7 +1,11 @@
 use axum::http::StatusCode;
 use serde::de::DeserializeOwned;
 
-use super::types::{endpoint::Endpoint, player::Player};
+use super::types::{
+    endpoint::Endpoint,
+    match_data::{Match, MatchIds},
+    player::Player,
+};
 
 pub async fn make_request_url(rp: Endpoint, param: String) -> Result<String, StatusCode> {
     match rp {
@@ -29,9 +33,20 @@ pub async fn make_request_url(rp: Endpoint, param: String) -> Result<String, Sta
     }
 }
 
+pub async fn get_match_list(name: String) -> Result<MatchIds, StatusCode> {
+    let url = make_request_url(Endpoint::Matches, name).await?;
+    request::<MatchIds>(url).await
+}
+
+pub async fn get_match(id: String) -> Result<Match, StatusCode> {
+    let url = make_request_url(Endpoint::Match, id).await?;
+    request::<Match>(url).await
+}
+
 pub async fn request<T: DeserializeOwned>(url: String) -> Result<T, StatusCode> {
+    // let msg = format!("requesting riot api at: {url}");
+    // tracing::debug!(msg);
     let client = reqwest::Client::new();
-    println!("{}", url);
     let res = client
         .get(url)
         .header(
@@ -41,6 +56,7 @@ pub async fn request<T: DeserializeOwned>(url: String) -> Result<T, StatusCode> 
         .send()
         .await
         .map_err(|e| {
+            // let msg = format!("{:#?}", e);
             println!("{:#?}", e);
             StatusCode::INTERNAL_SERVER_ERROR
         })?;
@@ -51,6 +67,7 @@ pub async fn request<T: DeserializeOwned>(url: String) -> Result<T, StatusCode> 
     }
 
     let deserialized_response = res.json::<T>().await.map_err(|e| {
+        // let msg = format!("{:#?}", e);
         println!("{:#?}", e);
         StatusCode::INTERNAL_SERVER_ERROR
     })?;

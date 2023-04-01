@@ -1,6 +1,17 @@
 use serde::{Deserialize, Serialize};
+//
+// #[derive(Deserialize, Serialize, Debug)]
+// #[serde(rename_all = "camelCase")]
+// pub struct MatchIds(pub Vec<String>);
+//
+// #[derive(Deserialize, Serialize, Debug)]
+// #[serde(rename_all = "camelCase")]
+// pub struct History(pub Vec<Match>);
 
-// struct containing the fields I needed
+pub type MatchIds = Vec<String>;
+pub type History = Vec<Match>;
+
+// struct containing the fields I need
 // matching pattern return from
 // https://americas.api.riotgames.com/lol/match/v5/matches/{matchId}
 // docs: https://developer.riotgames.com/apis#match-v5/GET_getMatch
