@@ -1,29 +1,35 @@
 use axum::http::StatusCode;
 use serde::de::DeserializeOwned;
 
-use super::types::{
-    endpoint::Endpoint,
-    match_data::{Match, MatchIds},
-    player::Player,
+use super::{
+    models::{
+        endpoint::Endpoint,
+        match_data::{Match, MatchIds},
+        player::Player,
+    },
+    mongo::Repo,
 };
 
-pub async fn make_request_url(rp: Endpoint, param: String) -> Result<String, StatusCode> {
-    match rp {
+pub async fn make_request_url(
+    db: &Repo,
+    endpoint: Endpoint,
+    param: String,
+) -> Result<String, StatusCode> {
+    match endpoint {
         Endpoint::Player => Ok(format!(
-            "https://br1.api.riotgames.com/lol/summoner/v4/summoners/by-name/{}",
-            &param
+            "https://br1.api.riotgames.com/lol/summoner/v4/summoners/by-name/{param}"
         )),
 
         Endpoint::Matches => {
-            let player_req_url = format!(
-                "https://br1.api.riotgames.com/lol/summoner/v4/summoners/by-name/{}",
-                &param
-            );
+            let player_req_url =
+                format!("https://br1.api.riotgames.com/lol/summoner/v4/summoners/by-name/{param}");
 
-            let player = request::<Player>(player_req_url).await?;
+            let player = match db.find_player(param).await {
+                Some(p) => p,
+                _ => request::<Player>(player_req_url).await?,
+            };
 
-            Ok(format!("https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/{}/ids?start=0&count=20",
-                        player.puuid))
+            Ok(format!("https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/{}/ids?start=0&count=20", player.puuid))
         }
 
         Endpoint::Match => Ok(format!(
@@ -33,14 +39,28 @@ pub async fn make_request_url(rp: Endpoint, param: String) -> Result<String, Sta
     }
 }
 
-pub async fn get_match_list(name: String) -> Result<MatchIds, StatusCode> {
-    let url = make_request_url(Endpoint::Matches, name).await?;
+pub async fn get_match_list(db: &Repo, name: String) -> Result<MatchIds, StatusCode> {
+    let url = make_request_url(&db, Endpoint::Matches, name).await?;
     request::<MatchIds>(url).await
 }
 
-pub async fn get_match(id: String) -> Result<Match, StatusCode> {
-    let url = make_request_url(Endpoint::Match, id).await?;
-    request::<Match>(url).await
+pub async fn get_match(db: Repo, id: String) -> Result<Match, StatusCode> {
+    let match_data = db.find_match(id.clone()).await;
+
+    match match_data {
+        Some(match_data) => {
+            println!("fetched {id}'s data from db");
+            Ok(match_data)
+        }
+
+        None => {
+            println!("fetched {id}'s data from riot");
+            let url = make_request_url(&db, Endpoint::Match, id).await?;
+            let match_data = request::<Match>(url).await?;
+            db.insert_match(match_data.clone()).await;
+            Ok(match_data)
+        }
+    }
 }
 
 pub async fn request<T: DeserializeOwned>(url: String) -> Result<T, StatusCode> {
@@ -51,7 +71,7 @@ pub async fn request<T: DeserializeOwned>(url: String) -> Result<T, StatusCode> 
         .get(url)
         .header(
             "X-Riot-Token",
-            "RGAPI-5e3767a5-7746-40ba-8ab8-4bcda6b90b06".to_owned(),
+            "RGAPI-6f21b042-4099-4e47-be47-c538c8931ebe".to_owned(),
         )
         .send()
         .await

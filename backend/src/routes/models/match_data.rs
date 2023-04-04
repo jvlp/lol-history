@@ -15,20 +15,20 @@ pub type History = Vec<Match>;
 // matching pattern return from
 // https://americas.api.riotgames.com/lol/match/v5/matches/{matchId}
 // docs: https://developer.riotgames.com/apis#match-v5/GET_getMatch
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Clone, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct Match {
     metadata: Metadata,
     info: Info,
 }
 
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Clone, Debug)]
 #[serde(rename_all = "camelCase")]
 struct Metadata {
     match_id: String,
 }
 
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Clone, Debug)]
 #[serde(rename_all = "camelCase")]
 struct Info {
     game_creation: i64,
@@ -38,7 +38,7 @@ struct Info {
     participants: Vec<Participant>,
 }
 
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Clone, Debug)]
 #[serde(rename_all = "camelCase")]
 struct Participant {
     assists: i64,
@@ -64,28 +64,28 @@ struct Participant {
     win: bool,
 }
 
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Clone, Debug)]
 #[serde(rename_all = "camelCase")]
 struct Perks {
     stat_perks: PerkStats,
     styles: Vec<PerkStyle>,
 }
 
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Clone, Debug)]
 struct PerkStats {
     defense: i64,
     flex: i64,
     offense: i64,
 }
 
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Clone, Debug)]
 struct PerkStyle {
     description: String,
     selections: Vec<PerkStyleSelection>,
     style: i64,
 }
 
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Clone, Debug)]
 struct PerkStyleSelection {
     perk: i64,
     var1: i64,

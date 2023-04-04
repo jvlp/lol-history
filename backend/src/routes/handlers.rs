@@ -1,47 +1,81 @@
-use axum::{extract::Path, http::StatusCode, response::IntoResponse, Json};
+use axum::{
+    extract::{Path, State},
+    http::StatusCode,
+    response::IntoResponse,
+    Json,
+};
 
 use super::{
-    types::{
+    models::{
         endpoint::Endpoint,
         match_data::{History, Match, MatchIds},
         player::Player,
     },
+    mongo::Repo,
     utils::{get_match, get_match_list, make_request_url, request},
 };
 
-pub async fn player(Path(name): Path<String>) -> Result<impl IntoResponse, StatusCode> {
-    let url = make_request_url(Endpoint::Player, name).await?;
-    let player_data = request::<Player>(url).await?;
-    Ok(Json::<Player>(player_data))
+pub async fn player(
+    State(db): State<Repo>,
+    Path(name): Path<String>,
+) -> Result<impl IntoResponse, StatusCode> {
+    let player = db.find_player(name.clone()).await;
+
+    match player {
+        Some(player) => {
+            println!("fetched {name}'s data from db");
+            Ok(Json::<Player>(player))
+        }
+
+        None => {
+            println!("fetched {name}'s data from riot");
+            let url = make_request_url(&db, Endpoint::Player, name).await?;
+            let player = request::<Player>(url).await?;
+            db.insert_player(player.clone()).await;
+            Ok(Json::<Player>(player))
+        }
+    }
 }
 
-pub async fn matches(Path(name): Path<String>) -> Result<impl IntoResponse, StatusCode> {
-    let match_list = get_match_list(name).await?;
+pub async fn matches(
+    State(db): State<Repo>,
+    Path(name): Path<String>,
+) -> Result<impl IntoResponse, StatusCode> {
+    let match_list = get_match_list(&db, name).await?;
     Ok(Json::<MatchIds>(match_list))
 }
 
-pub async fn match_by_id(Path(id): Path<String>) -> Result<impl IntoResponse, StatusCode> {
-    let match_data = get_match(id).await?;
-    Ok(Json::<Match>(match_data))
-}
-
-pub async fn last_match(Path(name): Path<String>) -> Result<impl IntoResponse, StatusCode> {
-    let match_ids = get_match_list(name).await?;
+pub async fn last_match(
+    State(db): State<Repo>,
+    Path(name): Path<String>,
+) -> Result<impl IntoResponse, StatusCode> {
+    let match_ids = get_match_list(&db, name).await?;
     if let Some(last_match_id) = match_ids.first() {
-        let match_data = get_match(last_match_id.to_owned()).await?;
+        let match_data = get_match(db, last_match_id.to_owned()).await?;
         Ok(Json::<Match>(match_data))
     } else {
         Err(StatusCode::NOT_FOUND)
     }
 }
 
-pub async fn history(Path(name): Path<String>) -> Result<impl IntoResponse, StatusCode> {
-    let match_ids = get_match_list(name).await?;
+pub async fn match_by_id(
+    State(db): State<Repo>,
+    Path(id): Path<String>,
+) -> Result<impl IntoResponse, StatusCode> {
+    let match_data = get_match(db, id).await?;
+    Ok(Json::<Match>(match_data))
+}
+
+pub async fn history(
+    State(db): State<Repo>,
+    Path(name): Path<String>,
+) -> Result<impl IntoResponse, StatusCode> {
+    let match_ids = get_match_list(&db, name).await?;
     let mut response = vec![];
     let mut task_set = tokio::task::JoinSet::new();
 
     for id in match_ids {
-        task_set.spawn(get_match(id));
+        task_set.spawn(get_match(db.clone(), id));
     }
 
     while let Some(match_data) = task_set.join_next().await {
