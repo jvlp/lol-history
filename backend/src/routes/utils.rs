@@ -1,4 +1,7 @@
+use std::time::Duration;
+
 use axum::http::StatusCode;
+use reqwest::Response;
 use serde::de::DeserializeOwned;
 
 use super::{
@@ -63,15 +66,13 @@ pub async fn get_match(db: Repo, id: String) -> Result<Match, StatusCode> {
     }
 }
 
-pub async fn request<T: DeserializeOwned>(url: String) -> Result<T, StatusCode> {
-    // let msg = format!("requesting riot api at: {url}");
-    // tracing::debug!(msg);
+async fn send_request(url: &str) -> Result<Response, StatusCode> {
     let client = reqwest::Client::new();
-    let res = client
-        .get(url)
+    client
+        .get(url.clone())
         .header(
             "X-Riot-Token",
-            "RGAPI-6f21b042-4099-4e47-be47-c538c8931ebe".to_owned(),
+            "RGAPI-4a189dd2-5736-4ae1-8a56-65d3f9f5c4d0".to_owned(),
         )
         .send()
         .await
@@ -79,7 +80,20 @@ pub async fn request<T: DeserializeOwned>(url: String) -> Result<T, StatusCode> 
             // let msg = format!("{:#?}", e);
             println!("{:#?}", e);
             StatusCode::INTERNAL_SERVER_ERROR
-        })?;
+        })
+}
+
+pub async fn request<T: DeserializeOwned>(url: String) -> Result<T, StatusCode> {
+    let mut res = send_request(&url).await?;
+
+    // if rate limit exceded wait timeout and request again
+    // TODO: map unwraps to INTERNAL_SERVER_ERROR
+    if res.status() == StatusCode::from_u16(429).unwrap() {
+        let sleep_time = res.headers().get("Retry-After").unwrap().to_str().unwrap();
+        let sleep_time = sleep_time.parse::<u64>().unwrap();
+        tokio::time::sleep(Duration::from_secs(sleep_time)).await;
+        res = send_request(&url).await?;
+    }
 
     // if error foward status code from riot API
     if res.status() != StatusCode::OK {
