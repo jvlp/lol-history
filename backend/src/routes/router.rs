@@ -9,7 +9,7 @@ use super::{
     mongo::Repo,
 };
 
-pub async fn make_router() -> Router {
+pub fn init_tracing_sub() {
     tracing_subscriber::registry()
         .with(
             tracing_subscriber::EnvFilter::try_from_default_env()
@@ -17,7 +17,9 @@ pub async fn make_router() -> Router {
         )
         .with(tracing_subscriber::fmt::layer())
         .init();
+}
 
+pub async fn make_router() -> Router {
     let db = Repo::init().await;
 
     Router::new()
